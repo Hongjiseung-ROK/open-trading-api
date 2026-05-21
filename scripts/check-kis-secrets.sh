@@ -13,10 +13,12 @@ set -uo pipefail
 self_allow_re='scripts/check-kis-secrets\.sh$|scripts/run-gitleaks\.sh$|(^|/)\.gitleaks\.toml$'
 
 # 추적 금지 민감 파일명 (실제 자격증명 파일. *.example 템플릿만 추적할 것)
-deny_path_re='(^|/)(kis_devlp\.yaml|kisdev_vi\.yaml)$|(^|/)legacy/rest/config\.yaml$|(^|/)\.kis_token[^/]*$|\.pem$'
+deny_path_re='(^|/)(kis_devlp\.yaml|kisdev_vi\.yaml)$|(^|/)legacy/rest/config\.yaml$|(^|/)\.kis_token[^/]*$|(^|/)(api\.env|\.env)$|\.pem$'
 
 # 내용 패턴 — 자격증명 키 뒤에 20자 이상의 키처럼 보이는 값
-cred_re='(my_app|my_sec|paper_app|paper_sec|app_?key|app_?secret|APP_KEY|APP_SECRET|secret_?key)["'"'"']?[[:space:]]*[:=][[:space:]]*["'"'"']?[A-Za-z0-9/+_=-]{20,}'
+cred_re='(my_app|my_sec|paper_app|paper_sec|app_?key|app_?secret|APP_KEY|APP_SECRET|secret_?key|api[_-]?key|apikey)["'"'"']?[[:space:]]*[:=][[:space:]]*["'"'"']?[A-Za-z0-9/+_=-]{20,}'
+# 알려진 접두사 키 (OpenAI sk-, Firecrawl fc-)
+generic_re='(sk-[A-Za-z0-9_-]{20,}|fc-[A-Za-z0-9]{20,})'
 # JWT
 jwt_re='eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}'
 # 접근토큰 / 승인키 / Bearer
@@ -46,6 +48,7 @@ for f in "$@"; do
   hit=$(grep -nEH "$cred_re" "$f" 2>/dev/null | grep -Ev "$placeholder_re" | head -3 || true)
   [ -z "$hit" ] && hit=$(grep -nEH "$jwt_re" "$f" 2>/dev/null | grep -Ev "$placeholder_re" | head -3 || true)
   [ -z "$hit" ] && hit=$(grep -nEH "$token_re" "$f" 2>/dev/null | grep -Ev "$placeholder_re" | head -3 || true)
+  [ -z "$hit" ] && hit=$(grep -nEH "$generic_re" "$f" 2>/dev/null | grep -Ev "$placeholder_re" | head -3 || true)
   if [ -n "$hit" ]; then
     echo "🚫 차단: 실제 자격증명/토큰으로 보이는 값이 포함됨 → $f" >&2
     printf '%s\n' "$hit" | sed -E 's/([:=][[:space:]]*["'"'"']?)[A-Za-z0-9/+_=.-]{8,}/\1<REDACTED>/' >&2

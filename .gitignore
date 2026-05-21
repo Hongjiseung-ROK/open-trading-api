@@ -162,6 +162,12 @@ kis_devlp.yaml
 legacy/rest/config.yaml
 legacy/rest/kisdev_vi.yaml
 
+# ===== API 키 / 에이전트 워크스페이스 (민감) =====
+api.env
+**/api.env
+agent-workspace/state/
+.agent-workspace/
+
 # ===== Lean workspace =====
 .lean-workspace/
 
