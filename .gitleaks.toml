@@ -1,0 +1,25 @@
+# KIS open-trading-api — gitleaks 설정 (scripts/run-gitleaks.sh가 사용)
+title = "KIS open-trading-api gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "kis-credential"
+description = "KIS 앱키 / 앱시크릿 / 접근토큰"
+regex = '''(?i)(my_app|my_sec|paper_app|paper_sec|app_?key|app_?secret|approval_key|my_token)["']?\s*[:=]\s*["']?[A-Za-z0-9/+_=-]{20,}'''
+keywords = ["my_app", "my_sec", "paper_app", "paper_sec", "appkey", "appsecret", "approval_key", "my_token"]
+
+  [[rules.allowlist]]
+  description = "플레이스홀더 값(한글 안내문구)은 허용"
+  regexTarget = "match"
+  regexes = [
+    '''(앱키|시크릿|모의투자|증권계좌|선물옵션|HTS|사용자|8자리)''',
+  ]
+
+[allowlist]
+description = "템플릿/예제 파일의 플레이스홀더"
+regexes = [
+  '''앱키''',
+  '''앱키 시크릿''',
+]

@@ -156,6 +156,11 @@ yarn-error.log*
 KIS/
 .master/
 .kis_token*.json
+# 실제 자격증명 파일은 추적 금지 — *.example 템플릿만 커밋한다.
+kis_devlp.yaml
+**/kis_devlp.yaml
+legacy/rest/config.yaml
+legacy/rest/kisdev_vi.yaml
 
 # ===== Lean workspace =====
 .lean-workspace/
