@@ -1,0 +1,26 @@
+# ============================================================================
+# 리스크 한도 — propose.py(제안 시)와 approval_gate.py(실행 직전) 양쪽에서 강제한다.
+# ============================================================================
+
+# 실행 모드: paper(모의투자) | live(실거래)
+#   사용자는 '실거래 + 매 주문 사람 승인'을 선택했으나, 검증 전 안전을 위해
+#   paper 로 출고한다. 모의투자로 충분히 검증한 뒤 이 줄을 live 로 바꿔라.
+#   live 에서도 모든 주문은 approval_gate.py 의 사람 승인 + 'CONFIRM' 입력이 필요하다.
+mode: paper
+
+# KIS 계좌 — 비워두면 kis_devlp.yaml 의 계좌번호를 사용한다.
+account:
+  cano: ""              # 계좌번호 앞 8자리
+  acnt_prdt_cd: "01"    # 계좌상품코드 (종합계좌 = 01)
+
+# 주문 하드 한도 (보수적 기본값 — 검증 후 본인 자금규모에 맞게 조정)
+limits:
+  max_order_value_krw: 500000      # 주문 1건 최대 금액 (원)
+  max_qty_per_order: 100           # 주문 1건 최대 수량 (주)
+  max_open_proposals: 5            # 동시 대기 매매안 수
+  daily_order_value_krw: 2000000   # 하루 누적 주문금액 상한 (원)
+  allowed_sides: [buy, sell]
+  watchlist_only: true             # watchlist.yaml 외 종목 주문 금지
+
+# 모든 실주문은 approval_gate.py 를 통한 사람 승인 필수 (구조적으로 강제됨)
+require_human_approval: true

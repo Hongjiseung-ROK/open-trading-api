@@ -1,0 +1,21 @@
+# 국내주식 관심종목 — 뉴스 스캔 및 매매 대상.
+# watchlist_only: true 일 때 이 목록 외 종목은 매매안이 거부된다.
+stocks:
+  - code: "005930"
+    name: 삼성전자
+  - code: "000660"
+    name: SK하이닉스
+  - code: "035420"
+    name: NAVER
+  - code: "035720"
+    name: 카카오
+  - code: "005380"
+    name: 현대차
+  - code: "373220"
+    name: LG에너지솔루션
+
+# 시황 전반을 보기 위한 검색 쿼리
+market_queries:
+  - 코스피 증시 시황
+  - 코스닥 시황
+  - 한국 증시 외국인 수급
